@@ -31,7 +31,15 @@
 
 *GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
 
-[Gates determined based on constitution file]
+- Code quality gate: Design and implementation keep modules small, readable, and reviewable.
+- UX simplicity gate: User flows minimize steps, copy is clear, and no unnecessary UI complexity is introduced.
+- Responsive design gate: Web UI requirements include behavior across mobile, tablet, and desktop breakpoints.
+- Dependency gate: New dependencies are justified with a simpler-alternative analysis and maintenance impact.
+- Testing gate: Unit tests are planned first; integration and end-to-end coverage are explicitly evaluated for cross-boundary flows.
+- Task isolation gate: Task execution plan enforces one feature branch per task with no unrelated changes.
+- Commit discipline gate: Plan enforces one structured commit per completed task following the project commit template.
+- PR discipline gate: Plan enforces one PR per completed task, created from the task branch using `gh` commands.
+- Interface-driven design gate (Go code): Go backend and web UI components define and inject external dependencies as interfaces at point of use for testability.
 
 ## Project Structure
 

@@ -75,6 +75,13 @@
 - What happens when [boundary condition]?
 - How does system handle [error scenario]?
 
+## Testing Strategy *(mandatory)*
+
+- **Unit Tests**: Identify core business logic that MUST be covered with unit tests before implementation is considered complete.
+- **Integration Tests**: Specify whether service, database, or API boundary integration tests are required; if not required, state why.
+- **End-to-End Tests**: Specify whether end-to-end journey coverage is required for primary user flows; if not required, state why.
+- **Responsive Validation (if UI)**: Define viewport/device scenarios for mobile, tablet, and desktop validation.
+
 ## Requirements *(mandatory)*
 
 <!--
