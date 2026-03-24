@@ -588,7 +588,7 @@ Tenant admins configure a maximum upload size per group.
 ## Assumptions
 
 - **Developer Experience**: Developers are familiar with Go, HTMX, and PostgreSQL; these are standard tools for the team
-- **Storage Backend**: S3-compatible storage (rustfs initially) is available and configured before application deployment; scaling storage is not a v1 concern
+- **Storage Backend**: S3-compatible storage (RustFS initially) is available and configured before application deployment; scaling storage is not a v1 concern
 - **Authentication Scope**: Tenant users and group admins authenticate through Authelia OpenID; local credentials are limited to the bootstrap-created superuser account
 - **File Retention**: Files are retained indefinitely unless an organization explicitly deletes them; archival/retention policies are post-MVP features
 - **Security Baseline**: HTTPS/TLS is enforced at infrastructure level; application focuses on application-layer security and authorization
