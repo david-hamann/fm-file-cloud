@@ -54,17 +54,32 @@ specs/001-multi-tenant-file-storage/
 
 ### Source Code (repository root)
 ```text
-specs/
-└── 001-multi-tenant-file-storage/
-  ├── plan.md
-  ├── research.md
-  ├── data-model.md
-  ├── quickstart.md
-  └── contracts/
-    └── http-api.md
+backend/
+├── cmd/
+│   └── server/
+│       └── main.go            # Application entry point
+├── internal/
+│   ├── auth/                  # OIDC/Authelia integration
+│   ├── config/                # Three-layer configuration model
+│   ├── storage/               # S3-compatible storage client interface + adapter
+│   ├── tenant/                # Tenant management domain logic
+│   ├── user/                  # User and group domain logic
+│   ├── file/                  # File/folder/share domain logic
+│   ├── audit/                 # Audit log write + query
+│   └── operator/              # Superuser operator surface
+web/
+├── handler/                   # HTTP handlers (Go + HTMX server-rendered UI)
+├── template/                  # HTML templates
+└── static/                    # CSS, JS, and HTMX assets
+migrations/
+└── *.sql                      # Ordered PostgreSQL schema migrations
+deploy/
+└── compose/
+    ├── docker-compose.yml     # Full dev/non-prod ecosystem
+    └── config/                # Bootstrap config for PostgreSQL, RustFS, Authelia
 ```
 
-**Structure Decision**: This repository is currently in specification/planning stage. The selected structure is the feature-doc layout under `specs/001-multi-tenant-file-storage/` with no additional source tree changes introduced during planning. Implementation phase will follow a Go web application structure aligned with existing project patterns while keeping dependencies minimal.
+**Structure Decision**: The Go backend follows a `cmd/` + `internal/` layout with domain-separated packages. The web UI handlers and templates live under `web/` to keep UI concerns separate from core business logic. SQL migrations are co-located under `migrations/`. The `deploy/compose/` directory contains the docker-compose stack and bootstrap configuration required to stand up PostgreSQL, RustFS, and Authelia with zero manual wiring on first start.
 
 ## Complexity Tracking
 
