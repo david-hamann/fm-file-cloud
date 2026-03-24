@@ -33,12 +33,13 @@ A new organization admin authenticates through OpenID and creates the first tena
 
 **Why this priority**: Tenant creation is the root prerequisite for all tenant-scoped behavior.
 
-**Independent Test**: Authenticate as a first-time admin and verify a tenant is created with admin access.
+**Independent Test**: Authenticate as a first-time admin and verify a tenant is created with admin access and that the admin belongs to at least one tenant group.
 
 **Acceptance Scenarios**:
 
-1. **Given** a new organization admin authenticates via OpenID through Authelia, **When** they complete first login, **Then** a new isolated tenant is created and linked to that admin.
+1. **Given** a new organization admin authenticates via OpenID through Authelia, **When** they complete first login, **Then** a new isolated tenant is created and linked to that admin, and a default tenant group (for example, "Tenant Admins") is created with that admin added as a member.
 2. **Given** Authelia is unavailable, **When** a new user attempts to log in, **Then** they see a clear message that authentication is temporarily unavailable and are not offered a retry.
+3. **Given** a new tenant has just been created on first login, **When** the system inspects the first admin’s membership, **Then** that admin belongs to at least one group within that tenant.
 
 ---
 
