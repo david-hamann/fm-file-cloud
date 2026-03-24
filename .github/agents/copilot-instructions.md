@@ -15,7 +15,16 @@ web/
 
 ## Commands
 
-# Add commands for Go (backend + web UI handlers), SQL (PostgreSQL), HTMX for server-driven UI interactions
+```bash
+# Build
+go build ./...
+
+# Test
+go test ./...
+
+# Vet / lint
+go vet ./...
+```
 
 ## Code Style
 
