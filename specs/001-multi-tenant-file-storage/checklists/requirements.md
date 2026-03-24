@@ -31,7 +31,7 @@
 
 ## Notes
 
-- **Pending Items**: None. All previously identified clarifications have been resolved.
+- **Pending Items**: Remaining edge-case questions are tracked in [spec.md](../spec.md) (see Edge Cases section).
 - Authentication approach has been decided: tenant users and group admins use Authelia OpenID; bootstrap-created superuser uses local credentials.
 - Data residency approach has been decided: per-tenant residency configuration model, with launch deployments allowed to run in a single configured region.
 - Search scope has been decided for v1: filename, file type, and uploader.
