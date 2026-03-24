@@ -571,7 +571,7 @@ Tenant admins configure a maximum upload size per group.
 ### Measurable Outcomes
 
 - **SC-001**: Users typically upload, organize, and share their first file within 5 minutes of account creation
-- **SC-002**: System supports 1000 concurrent users per tenant without performance degradation (file upload/download response times remain under 3 seconds)
+- **SC-002**: System supports 1000 concurrent users per tenant without performance degradation (for file sizes up to 25 MB and client network bandwidth ≥ 20 Mbps down / 10 Mbps up, 95th-percentile time-to-first-byte or UI acknowledgement for upload/download operations remains under 3 seconds)
 - **SC-003**: File uploads and downloads maintain 99.5% success rate with automatic retry on transient failures
 - **SC-004**: Shared files are accessible to recipients within 1 second of permission grant completion
 - **SC-005**: Tenant data remains isolated with zero unauthorized cross-tenant data access incidents
