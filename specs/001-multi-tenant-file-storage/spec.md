@@ -3,7 +3,7 @@
 **Feature Branch**: `001-multi-tenant-file-storage`  
 **Created**: March 24, 2026  
 **Status**: Draft  
-**Input**: User description: "build a multi-tenant capable shared file storage application. it will have a backend written in GO, and a web UI written in go and htmx. For file storage, we will use AWS S3 compatible storage, like rustfs. Postgressql will be used to store user and file state. In the future we will also create an android application"
+**Input**: User description: "build a multi-tenant capable shared file storage application. it will have a backend written in Go, and a web UI written in Go and HTMX. For file storage, we will use AWS S3 compatible storage, like RustFS. PostgreSQL will be used to store user and file state. In the future we will also create an Android application"
 
 ## Clarifications
 
