@@ -24,7 +24,7 @@
 
 ## Feature Readiness
 
-- [x] All functional requirements have clear acceptance criteria
+- [ ] All functional requirements have clear acceptance criteria (pending: map FRs in spec.md to acceptance scenarios/user stories)
 - [x] User scenarios cover primary flows
 - [x] Feature meets measurable outcomes defined in Success Criteria
 - [x] No implementation details leak into specification
