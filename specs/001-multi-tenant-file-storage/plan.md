@@ -11,12 +11,6 @@ Build a multi-tenant-capable shared file storage platform with a Go backend and 
 
 ## Technical Context
 
-<!--
-  ACTION REQUIRED: Replace the content in this section with the technical details
-  for the project. The structure here is presented in advisory capacity to guide
-  the iteration process.
--->
-
 **Language/Version**: Go (backend + web UI handlers), SQL (PostgreSQL), HTMX for server-driven UI interactions  
 **Primary Dependencies**: Go standard library first; PostgreSQL driver, OIDC client integration for Authelia, S3-compatible client, HTMX (frontend library)  
 **Storage**: PostgreSQL for users/groups/fileshare/config/audit metadata; S3-compatible object storage (RustFS in dev) for file binaries  
@@ -49,7 +43,7 @@ Initial gate assessment: PASS (no justified violations needed at planning stage)
 ### Documentation (this feature)
 
 ```text
-specs/[###-feature]/
+specs/001-multi-tenant-file-storage/
 ├── plan.md              # This file (/speckit.plan command output)
 ├── research.md          # Phase 0 output (/speckit.plan command)
 ├── data-model.md        # Phase 1 output (/speckit.plan command)
@@ -59,13 +53,6 @@ specs/[###-feature]/
 ```
 
 ### Source Code (repository root)
-<!--
-  ACTION REQUIRED: Replace the placeholder tree below with the concrete layout
-  for this feature. Delete unused options and expand the chosen structure with
-  real paths (e.g., apps/admin, packages/something). The delivered plan must
-  not include Option labels.
--->
-
 ```text
 specs/
 └── 001-multi-tenant-file-storage/

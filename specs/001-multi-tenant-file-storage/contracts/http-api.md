@@ -27,7 +27,7 @@ This contract defines initial v1 interface boundaries for the Go backend + HTMX 
 ### Tenant and Membership
 - `POST /tenants` - Create tenant on first login (idempotent for already-associated users).
 - `POST /tenants/{tenantId}/invites` - Create invite (admin only).
-- `POST /invites/{token}/accept` - Accept invitation.
+- `POST /invites/accept` - Accept invitation (token provided in JSON body, e.g. `{ "token": "..." }`).
 
 ### Groups
 - `POST /tenants/{tenantId}/groups` - Create group (requires >=1 admin user).
@@ -47,7 +47,7 @@ This contract defines initial v1 interface boundaries for the Go backend + HTMX 
 - `POST /tenants/{tenantId}/files/{fileId}/shares` - Share with users/groups.
 - `DELETE /tenants/{tenantId}/files/{fileId}/shares/{shareId}` - Revoke share.
 - `POST /tenants/{tenantId}/files/{fileId}/external-shares` - Issue external one-time key.
-- `POST /external-access/{key}/consume` - Single-use external read-only access.
+- `POST /external-access/consume` - Single-use external read-only access (key provided in JSON body, e.g. `{ "key": "..." }`).
 
 ### Trash lifecycle
 - `GET /tenants/{tenantId}/trash` - List recoverable items.
