@@ -1,25 +1,18 @@
 <!--
 Sync Impact Report
-- Version change: 1.3.0 → 2.0.0
+- Version change: 2.0.1 → 2.0.2
 - Modified principles:
-  - I. Clean Code Is Mandatory → I. Clean Code Is Mandatory (clarified SOLID, naming, complexity rationale)
-  - II. Simple UX by Default → II. Accessibility and Usability by Default (added WCAG 2.1 AA requirement, mobile-first approach, user validation)
-  - III. Responsive Design → III. Responsive and Mobile-First Design (clarified mobile-first, specific breakpoints, real device testing)
-  - IV. Minimal Dependencies → IV. Minimal and Auditable Dependencies (added security review, version pinning, license audit, regular purge)
-  - V. Test Strategy → V. Comprehensive Testing Strategy (added coverage targets 70%, testing pyramid model, red-green-refactor)
-  - VI. Task Isolation/Branching/Commit/PR (NON-NEGOTIABLE) → VI. Atomic Commits, Reviews, and Pull Requests (softened to allow logically-related subtasks, clarified PR requirements, <400 LOC guideline)
-  - VII. Interface-Driven Design in Go → VII. Interface-Driven Design and Dependency Injection in Go (narrowed interfaces, error handling patterns, structured logging, error wrapping)
+  - II. Accessibility and Usability by Default → II. Accessibility and Usability by Default (normalized SHOULD/MUST wording and removed duplicate mobile-first phrasing)
+  - V. Comprehensive Testing Strategy → V. Comprehensive Testing Strategy (normalized SHOULD wording for testing pyramid guidance)
+  - VII. Interface-Driven Design and Dependency Injection in Go → VII. Interface-Driven Design and Dependency Injection in Go (corrected HTTP client interface guidance and standard-library error wrapping guidance)
 - Added sections:
-  - VIII. Security and Error Handling by Default (NEW principle for secure defaults, input validation, secret management, error context, security review)
+  - Technical Standards heading restored before architecture standards
 - Removed sections:
-  - None (replaced "NON-NEGOTIABLE" tags with principle content refinements)
+  - None
 - Templates requiring updates:
-  - ⚠ pending: .specify/templates/plan-template.md (add accessibility+security gates)
-  - ⚠ pending: .specify/templates/spec-template.md (add a11y/security test strategy)
-  - ⚠ pending: .specify/templates/tasks-template.md (add security, documentation tasks)
+  - ✅ none required (constitution-only consistency clarification)
 - Follow-up TODOs:
   - Initialize `.specify/memory/exceptions.md` for tracking governance exceptions
-  - Define branch naming convention (suggest: `[task-id]-[short-description]` or `issue/[issue-id]`)
   - Document Go interface examples and anti-patterns in a guide
   - Confirm license audit tool (e.g., `go install github.com/mitchellh/golicense`)
 -->
@@ -40,8 +33,8 @@ Rationale: maintainable code reduces defects, shortens review cycles, improves t
 User-facing features MUST prioritize clarity, inclusive design, and accessibility. Workflows MUST minimize
 steps and copy MUST be clear; design decisions SHOULD be validated against documented user needs. All web
 UI work MUST meet WCAG 2.1 Level AA accessibility standards (keyboard navigation, screen reader support,
-color contrast). Features should follow mobile-first design principles and be testable with real users or
-use cases before merge.  Default behavior MUST favor clarity and predictable interaction over feature density.
+color contrast). Features SHOULD be tested against representative user journeys before merge. Default
+behavior MUST favor clarity and predictable interaction over feature density.
 Rationale: accessible, simple interfaces improve task completion, reduce support burden, and reach all user
 capabilities.
 
@@ -67,30 +60,29 @@ and reduces future maintenance burden.
 Unit tests MUST cover all business logic and critical paths; target minimum 70% code coverage. Tests MUST
 pass before merge. Integration tests and end-to-end tests MUST be explicitly evaluated for cross-service,
 database, API-contract, and critical-journey behavior; if omitted, rationale MUST be documented.
-Test categorization should follow the testing pyramid: majority unit tests, fewer integration tests, minimal
+Test categorization SHOULD follow the testing pyramid: majority unit tests, fewer integration tests, minimal
 e2e tests. Code review MUST verify test adequacy and that tests fail without the implementation.
 Rationale: unit tests provide fast correctness feedback; pyramid strategy scales testing efficiency;
 integration/e2e coverage protects system boundaries and user-critical flows.
 
-### VI. Atomic Commits, Reviews, and Pull Requests
-Every implementation task (T001, T002, etc.) MUST be executed in its own feature branch. Logically
-related tasks or subtasks MAY share a feature branch and PR if all changes collectively address a single
-user story and remain reviewable in <400 lines of core logic changes.
+### VI. Atomic Task Branches, Commits, Reviews, and Pull Requests
+Every implementation task (T001, T002, etc.) MUST be executed in its own task branch. A task branch
+MUST contain changes for exactly one task and MUST not bundle unrelated task or story work. Task branch
+names MUST follow `[task-id]-[short-description]`.
 
-Each feature work MUST produce exactly one structured commit (or minimal related commits, e.g.,
-"implement feature" + "add tests") that corresponds to the task. Batch commits spanning unrelated changes
-are not allowed. Commit messages MUST follow `.specify/templates/commit-message-template.md`.
+Each completed task MUST produce one task-specific commit or a minimal series of task-specific commits
+that together cover only that task. Batch commits spanning unrelated tasks are not allowed. Commit
+messages MUST follow `.specify/templates/commit-message-template.md`.
 
-Every completed feature branch MUST result in a pull request using GitHub CLI `gh`. Each PR MUST include:
-test results, related issue/task IDs, and a summary of what was changed and why. Code review MUST verify
-compliance with principles before approval.
+Every completed task branch MUST result in a pull request using GitHub CLI `gh`. Each PR MUST map to
+exactly one task and MUST include test results, related issue/task IDs, and a summary of what changed
+and why. Code review MUST verify compliance with principles before approval.
 
 If a task is abandoned or substantially re-scoped, the branch MUST include a final explanatory commit
 documenting the reasoning before closure.
 
-Rationale: atomic work units with clear PRs improve traceability, enable efficient review, support safe
-rollbacks, and facilitate team coordination. Allowing logically-related subtasks in one PR reduces friction
-while maintaining clarity.
+Rationale: atomic task branches and task-specific PRs improve traceability, enable efficient review,
+support safe rollbacks, and keep planning, implementation, and review aligned.
 
 ### VII. Interface-Driven Design and Dependency Injection in Go
 In Go backend and web UI code, external dependencies (storage, HTTP clients, service calls) MUST be defined
@@ -100,10 +92,10 @@ over large umbrella interfaces.
 
 Common patterns that MUST use interfaces:
 - Database access: inject `db.Querier` interface, not `*sql.DB`
-- HTTP clients: inject `http.Client` interface, not `*http.Client` directly
+- HTTP clients: inject a narrow locally defined interface (for example, an `HTTPDoer` with `Do(*http.Request)`), not `*http.Client` directly
 - External services: define narrow service interfaces for each dependency
 - Repository/data access: define repository interfaces to enable mock implementations
-- Error handling: return concrete error types but accept `error` interfaces for flexibility
+- Error handling: return `error` values with wrapped context and compare typed or sentinel errors only where needed
 
 Every unit test MUST be able to mock all external dependencies via interface substitution without
 modifying non-test code. Integration tests MAY use real implementations. Use structured logging (e.g.,
@@ -121,7 +113,7 @@ credentials, tokens) MUST be injected via environment variables or secure vaults
 committed. Communication with PostgreSQL and external services MUST use encrypted connections (TLS).
 
 Go code MUST use explicit error handling; avoid ignore-the-error patterns. Return meaningful errors with
-context (wrap errors with additional context using `fmt.Errorf` or `errors.Wrap`). Unit tests MUST verify
+context (wrap errors with additional context using `fmt.Errorf` with `%w` or equivalent standard-library patterns). Unit tests MUST verify
 error behavior for critical paths.
 
 All code changes MUST be reviewed for security implications before approval. Libraries with known CVEs
@@ -129,6 +121,8 @@ MUST not be used; outdated dependencies MUST be updated promptly.
 
 Rationale: security-first practices prevent common vulnerabilities; proper error handling improves debugging
 and reduces downtime; explicit error management supports testability and reliability.
+
+## Technical Standards
 
 Architecture MUST follow these language-specific practices and principle constraints:
 
@@ -171,8 +165,8 @@ All architecture and implementation plans MUST reflect these standards and princ
 - Every implementation plan MUST pass the Constitution Check gates before Phase 0 research is
   considered complete.
 - Task breakdown MUST prioritize unit tests and document integration/e2e inclusion or omission.
-- Task planning and execution MUST map one task to one feature branch, one task-specific commit, and one
-  task-specific PR created via `gh`.
+- Task planning and execution MUST map one task to one branch named `[task-id]-[short-description]`, one
+  task-specific commit set, and one task-specific PR created via `gh`.
 - Code review MUST verify compliance with all core principles and technical standards prior to approval.
 - Any justified exception MUST be recorded in the relevant plan and referenced in pull request review.
 
@@ -206,4 +200,4 @@ Exceptions are temporary and MUST include a proposed remediation plan or sunset 
 - Quarterly reviews MUST inspect the exceptions log and evaluate whether new principles or refinements are needed.
 - Major releases (e.g., launch or significant feature completion) SHOULD trigger a constitution review to ensure ongoing relevance.
 
-**Version**: 2.0.0 | **Ratified**: 2026-03-24 | **Last Amended**: 2026-03-24
+**Version**: 2.0.2 | **Ratified**: 2026-03-24 | **Last Amended**: 2026-03-24

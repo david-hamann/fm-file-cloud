@@ -17,7 +17,7 @@ description: "Task list template for feature implementation"
 - **[P]**: Can run in parallel (different files, no dependencies)
 - **[Story]**: Which user story this task belongs to (e.g., US1, US2, US3)
 - Include exact file paths in descriptions
-- Each task MUST be implemented in its own feature branch and completed with one task-specific commit
+- Each task MUST be implemented in its own branch named `[task-id]-[short-description]` and completed with one task-specific commit set
 - Each completed task MUST create one task-specific PR using GitHub CLI `gh` commands
 
 ## Path Conventions
@@ -260,7 +260,7 @@ With multiple developers:
 - [Story] label maps task to specific user story for traceability
 - Each user story should be independently completable and testable
 - Verify required unit tests fail before implementing
-- Use one feature branch per task and one structured commit per completed task
+- Use one task branch per task and one structured commit set per completed task
 - Create one PR per completed task using `gh` from the task branch
 - Stop at any checkpoint to validate story independently
 - Avoid: vague tasks, same file conflicts, cross-story dependencies that break independence

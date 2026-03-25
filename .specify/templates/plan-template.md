@@ -1,6 +1,6 @@
 # Implementation Plan: [FEATURE]
 
-**Branch**: `[###-feature-name]` | **Date**: [DATE] | **Spec**: [link]
+**Feature Slug**: `[###-feature-name]` | **Task Branches**: one per task using `[task-id]-[short-description]` | **Date**: [DATE] | **Spec**: [link]
 **Input**: Feature specification from `/specs/[###-feature-name]/spec.md`
 
 **Note**: This template is filled in by the `/speckit.plan` command. See `.specify/templates/plan-template.md` for the execution workflow.
@@ -36,7 +36,7 @@
 - Responsive design gate: Web UI requirements include behavior across mobile, tablet, and desktop breakpoints.
 - Dependency gate: New dependencies are justified with a simpler-alternative analysis and maintenance impact.
 - Testing gate: Unit tests are planned first; integration and end-to-end coverage are explicitly evaluated for cross-boundary flows.
-- Task isolation gate: Task execution plan enforces one feature branch per task with no unrelated changes.
+- Task isolation gate: Task execution plan enforces one task branch per task with no unrelated changes.
 - Commit discipline gate: Plan enforces one structured commit per completed task following the project commit template.
 - PR discipline gate: Plan enforces one PR per completed task, created from the task branch using `gh` commands.
 - Interface-driven design gate (Go code): Go backend and web UI components define and inject external dependencies as interfaces at point of use for testability.
