@@ -16,7 +16,7 @@ This feature depends on `000-foundation-dev-environment` for local environment b
 **Language/Version**: Go (backend + web UI handlers), SQL (PostgreSQL), HTMX for server-driven UI interactions  
 **Primary Dependencies**: Go standard library first; PostgreSQL driver, OIDC client integration for Authelia, S3-compatible client, HTMX (frontend library)  
 **Storage**: PostgreSQL for users/groups/fileshare/config/audit metadata; S3-compatible object storage (RustFS in dev) for file binaries  
-**Testing**: Go unit tests (table-driven where appropriate), integration tests for Postgres/S3/OIDC boundaries, end-to-end tests for core user journeys  
+**Testing**: Go unit tests (table-driven where appropriate), integration tests for PostgreSQL/S3/OIDC boundaries, end-to-end tests for core user journeys  
 **Target Platform**: Linux server runtime; local dev/non-prod environment provided by feature `000-foundation-dev-environment`
 **Project Type**: Web application (Go backend + server-rendered HTMX UI) with future Android client support  
 **Performance Goals**: Align to SC targets, including 1000 concurrent users/tenant and sub-3-second p95 upload/download acknowledgement for defined file/network profile  

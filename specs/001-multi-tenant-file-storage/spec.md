@@ -478,7 +478,7 @@ Tenant admins configure a maximum upload size per group.
 
 - **FR-001**: System MUST support multiple isolated tenants with complete data separation - users from Tenant A cannot access resources from Tenant B
 - **FR-002**: System MUST authenticate tenant users and group admins via OpenID provided by Authelia
-- **FR-003**: System MUST support file upload with size validation and store files in S3-compatible storage (initially rustfs, future AWS S3 compatibility)
+- **FR-003**: System MUST support file upload with size validation and store files in S3-compatible storage (initially RustFS, future AWS S3 compatibility)
 - **FR-004**: System MUST track file metadata including: filename, file size, MIME type, upload timestamp, uploader identity, storage location
 - **FR-005**: System MUST support file download with streaming to users who have "view" or higher permissions
 - **FR-006**: System MUST enforce tenant-user group membership - every tenant user MUST belong to at least one group

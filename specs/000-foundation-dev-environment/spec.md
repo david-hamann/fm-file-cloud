@@ -4,7 +4,7 @@
 **Task Branch Strategy**: One branch per task using `[task-id]-[short-description]`  
 **Created**: March 24, 2026  
 **Status**: Draft  
-**Input**: User description: "Please read the constitution.md and the specs and create a foundational feature 000 to set up the actual development environment using our golang, postgressql, and authelia"
+**Input**: User description: "Please read the constitution.md and the specs and create a foundational feature 000 to set up the actual development environment using our golang, PostgreSQL, and authelia"
 
 ## User Scenarios & Testing *(mandatory)*
 
