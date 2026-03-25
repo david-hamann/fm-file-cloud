@@ -5,6 +5,8 @@
 **Status**: Draft  
 **Input**: User description: "build a multi-tenant capable shared file storage application. it will have a backend written in Go, and a web UI written in Go and HTMX. For file storage, we will use AWS S3 compatible storage, like RustFS. PostgreSQL will be used to store user and file state. In the future we will also create an Android application"
 
+**Dependency**: Requires completion of feature `000-foundation-dev-environment` for local environment bootstrap, startup diagnostics, and onboarding baseline.
+
 ## Clarifications
 
 ### Session 2026-03-24
@@ -347,21 +349,6 @@ Superusers maintain infrastructure settings through the operator interface.
 
 ---
 
-### User Story 22 - Docker-Compose Ecosystem Startup (Priority: P2)
-
-Developers/operators bring up the full ecosystem via docker-compose.
-
-**Why this priority**: Single-command environment startup accelerates delivery and validation.
-
-**Independent Test**: Start from clean machine and run core workflow end-to-end.
-
-**Acceptance Scenarios**:
-
-1. **Given** Docker and docker-compose are available, **When** stack starts, **Then** app services plus PostgreSQL, RustFS, Authelia, and SMTP dependencies are reachable.
-2. **Given** a required service is unhealthy, **When** startup runs, **Then** readiness is not reported and actionable logs are visible.
-
----
-
 ### User Story 23 - Android Client Access (Priority: P3)
 
 Android users access the same tenant-scoped content as web users.
@@ -432,8 +419,6 @@ Tenant admins configure a maximum upload size per group.
 - What happens when an update would leave a group with zero admin users?
 - What happens when an update would leave the superuser group with zero superusers?
 - What happens when an external one-time access key is intercepted, expires, or already used?
-- What happens when superuser bootstrap environment variables are missing, empty, or invalid?
-- What happens when a required docker-compose service starts unhealthy or with incompatible configuration?
 - What happens when a file TTL expires while a user is actively viewing or downloading the file?
 - What happens when a file in trash reaches retention expiry during an attempted restore?
 - How does the system enforce tenant-specific residency policy when multiple regions are configured?
@@ -444,8 +429,6 @@ Tenant admins configure a maximum upload size per group.
 - What happens when a user's permission is revoked while they have an active download or open file session?
 - **[RESOLVED]** The system prevents cyclic subgroup relationships by maintaining a closure table of all ancestor-descendant pairs; when adding a subgroup, the system checks if the operation would create a reverse relationship that already exists; if so, the operation is rejected with a clear error message.
 - **[RESOLVED]** If an external one-time key is otherwise valid but the target file has moved to trash or been purged, the system returns HTTP 401 and logs the access attempt.
-- What happens if application bootstrap is interrupted and restarted while initial superuser creation is in progress?
-- What happens when stale docker-compose volumes/configuration create schema or service-version drift on restart?
 - What happens when tenant data residency configuration is changed after files already exist in a different region?
 
 ## Testing Strategy *(mandatory)*
@@ -466,7 +449,6 @@ Tenant admins configure a maximum upload size per group.
   - Authentication and session management via Authelia OpenID integration for tenant users and group admins
   - Superuser configuration management for S3, database, and SMTP with connectivity validation
   - Initial superuser bootstrap from environment variables with validation and first-login password-change enforcement
-  - Full ecosystem startup and inter-service connectivity through docker-compose
   - Tenant boundary enforcement (data isolation)
   - Trash lifecycle transitions (active → trash → purge) with configurable retention
   - External email share key issuance, validation, single-use enforcement, and expiry handling
@@ -480,7 +462,6 @@ Tenant admins configure a maximum upload size per group.
   - First boot with superuser env vars → initial superuser creation → first login requires password rotation
   - Superuser login → system operator interface access → update and validate configuration changes
   - Superuser login → update platform settings (S3/database/SMTP) → validation success
-  - Startup via docker-compose → health checks pass → core workflows execute successfully
   - File versioning and restore flow
   - Tenant admin managing users and permissions
   - Mobile app integration (after Android app development)
@@ -535,15 +516,11 @@ Tenant admins configure a maximum upload size per group.
 - **FR-038**: System MUST fail startup with a clear error if required superuser bootstrap environment variables are missing or invalid during first-time bootstrap
 - **FR-039**: System MUST enforce password change on first login for bootstrap-created superuser credentials
 - **FR-040**: System MUST provide a dedicated system operator interface for superusers to maintain and update global system configuration settings
-- **FR-041**: System MUST provide a docker-compose runtime that starts the entire application ecosystem for development and non-production operation
-- **FR-042**: System MUST include all required ecosystem services in docker-compose (application services, PostgreSQL, RustFS or equivalent S3-compatible storage, Authelia OpenID provider, and SMTP integration) with interoperable default configuration
-- **FR-043**: System MUST expose service health/readiness states during docker-compose startup and fail clearly when required services are unavailable or misconfigured
 - **FR-044**: System MUST support local authentication only for the bootstrap-created superuser account used for platform-operator access
-- **FR-045**: System MUST provide bootstrap-ready docker-compose configuration values for external dependencies, including PostgreSQL, RustFS, and Authelia, so first startup can complete without manual service wiring
 - **FR-046**: System MUST support per-tenant data residency configuration for file and metadata storage placement, while allowing deployments to operate with a single configured region when only one region is available
 - **FR-047**: When a trash restore operation would conflict with an existing file at the same path and name, the system MUST present the user with a clear warning and three resolution options: (1) Overwrite — the existing file is moved to trash before the restore completes, preserving its metadata and sharing so it remains recoverable within its own retention window; (2) Cancel — the restore is abandoned and the trash item is unchanged; (3) Rename — the file is restored under the system-generated name `filename-restored.ext`, leaving the existing file in place unmodified
 - **FR-048**: When a file upload fails due to S3-compatible storage being unavailable, the system MUST automatically retry the upload using exponential back-off intervals; the user MUST see a visible retry status throughout; after retries are exhausted without success the upload MUST be abandoned and the user MUST be shown a clear error message with the option to retry manually
-- **FR-049**: System MUST implement a three-layer configuration model: (1) environment variables supply bootstrap credentials and pre-database service connection strings required before the database is reachable; (2) database-stored `PlatformConfiguration` holds runtime-adjustable settings manageable by superusers via the operator interface without requiring a restart, and is the authoritative source for all running instances; (3) a default configuration file shipped with the docker-compose environment seeds the database with initial values on first startup when no stored configuration exists, requiring no manual wiring to complete first boot
+- **FR-049**: System MUST implement a three-layer configuration model: (1) environment variables supply bootstrap credentials and pre-database service connection strings required before the database is reachable; (2) database-stored `PlatformConfiguration` holds runtime-adjustable settings manageable by superusers via the operator interface without requiring a restart, and is the authoritative source for all running instances; (3) baseline default values from feature `000-foundation-dev-environment` seed initial runtime configuration on first startup when no stored configuration exists
 - **FR-050**: System MUST monitor Authelia service availability using a circuit breaker; when Authelia becomes unreachable, the system MUST immediately set a system status flag to "authentication unavailable"; new login attempts MUST be rejected with a clear message indicating authentication is temporarily offline; existing user sessions with active tokens MUST remain valid and may extend their TTL if refresh is attempted before token expiry; when Authelia recovers and responds, the status flag MUST be cleared and login/refresh operations MUST resume normally
 - **FR-051**: System MUST prevent cyclic subgroup relationships by maintaining a closure table of all ancestor-descendant group relationships in the database; when a subgroup assignment is attempted, the system MUST check if the operation would create a reverse relationship (making a group a descendant of one of its descendants); if a cycle would be created, the operation MUST be rejected with a clear message explaining that the group hierarchy cannot include cycles
 - **FR-052**: If an external one-time access key is presented for a file that has moved to trash or been purged, the system MUST deny access with HTTP 401 and MUST log the attempt with timestamp, presented key identifier, and outcome
@@ -581,7 +558,6 @@ Tenant admins configure a maximum upload size per group.
 - **SC-008**: System maintains data integrity with zero unintended file version loss during storage operations
 - **SC-009**: File search returns relevant results in under 1 second for typical tenant file sizes up to 10,000 files
 - **SC-010**: Android app (when released) provides equivalent file access experience as web UI with 95% feature parity
-- **SC-011**: New team members can start the full ecosystem from docker-compose and complete a basic upload/share workflow within 15 minutes of setup
 - **SC-012**: 99% of deleted or TTL-expired files remain recoverable from trash throughout the configured retention window
 - **SC-013**: 99% of eligible trash restores complete successfully in under 30 seconds
 
@@ -598,9 +574,8 @@ Tenant admins configure a maximum upload size per group.
 - **Superuser Scope**: Superusers are platform operators in a dedicated superuser group outside tenant group hierarchy; they can manage global S3/database/SMTP settings but are not implicitly granted tenant content access unless explicitly assigned
 - **Operator Interface Scope**: System configuration maintenance is performed through a dedicated operator interface accessible only to superusers
 - **Bootstrap Security**: Initial superuser ID and password are provided only through environment variables at first boot; bootstrap credentials are rotated immediately after first login
-- **Container Runtime**: Docker and docker-compose are available in target development and non-production environments
-- **Bootstrap Dependencies**: Docker-compose bootstrap includes configured dependency services for PostgreSQL, RustFS, and Authelia so the application can start with required external integrations available
-- **Configuration Layering**: Application configuration follows a three-layer hierarchy, with each layer authoritative for its own concerns and not substitutable by another: (1) Environment variables supply bootstrap credentials and service connection strings that must exist before the database is reachable (e.g. DB URL, superuser bootstrap credentials); (2) The database (`PlatformConfiguration`) stores runtime-adjustable settings managed by superusers via the operator interface, effective immediately without restart and consistent across all application instances; (3) A default configuration file shipped with the docker-compose environment provides initial values that seed the database on first startup when no stored configuration exists, enabling zero-manual-wiring first boot
+- **Foundational Environment Dependency**: Local environment bootstrap, startup diagnostics, and onboarding workflows are provided by feature `000-foundation-dev-environment`; this feature assumes that baseline is already available
+- **Configuration Layering**: Application configuration follows a three-layer hierarchy, with each layer authoritative for its own concerns and not substitutable by another: (1) environment variables supply bootstrap credentials and service connection strings that must exist before the database is reachable (e.g., DB URL, superuser bootstrap credentials); (2) the database (`PlatformConfiguration`) stores runtime-adjustable settings managed by superusers via the operator interface, effective immediately without restart and consistent across all application instances; (3) baseline defaults from feature `000-foundation-dev-environment` seed first-start configuration when no stored configuration exists
 - **Data Residency Scope**: Tenant data residency is configured per tenant; launch environments may run in a single configured region while retaining the per-tenant configuration model
 - **Supporting Infrastructure**: Email delivery system (for invitations) exists or will be provided by platform; application assumes reliable email
 - **External Share Security**: One-time external access keys are read-only, single-use, and expire after a system-configurable duration (default 5 days)

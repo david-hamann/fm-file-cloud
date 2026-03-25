@@ -9,13 +9,15 @@
 
 Build a multi-tenant-capable shared file storage platform with a Go backend and Go+HTMX web UI, using PostgreSQL for application state and S3-compatible storage for file objects, with strict tenant isolation and auditable administration. The implementation follows existing stack and architecture patterns in the specification and constitution, emphasizing interface-driven Go design, minimal and auditable dependencies, and a testing-first approach (unit, integration, end-to-end).
 
+This feature depends on `000-foundation-dev-environment` for local environment bootstrap, startup diagnostics, and onboarding workflows.
+
 ## Technical Context
 
 **Language/Version**: Go (backend + web UI handlers), SQL (PostgreSQL), HTMX for server-driven UI interactions  
 **Primary Dependencies**: Go standard library first; PostgreSQL driver, OIDC client integration for Authelia, S3-compatible client, HTMX (frontend library)  
 **Storage**: PostgreSQL for users/groups/fileshare/config/audit metadata; S3-compatible object storage (RustFS in dev) for file binaries  
 **Testing**: Go unit tests (table-driven where appropriate), integration tests for Postgres/S3/OIDC boundaries, end-to-end tests for core user journeys  
-**Target Platform**: Linux server runtime, docker-compose dev/non-prod environment
+**Target Platform**: Linux server runtime; local dev/non-prod environment provided by feature `000-foundation-dev-environment`
 **Project Type**: Web application (Go backend + server-rendered HTMX UI) with future Android client support  
 **Performance Goals**: Align to SC targets, including 1000 concurrent users/tenant and sub-3-second p95 upload/download acknowledgement for defined file/network profile  
 **Constraints**: Strict tenant isolation, WCAG 2.1 AA for web UI, minimal dependencies, explicit error handling/security logging controls, no tenant local auth  
@@ -75,11 +77,11 @@ migrations/
 └── *.sql                      # Ordered PostgreSQL schema migrations
 deploy/
 └── compose/
-    ├── docker-compose.yml     # Full dev/non-prod ecosystem
-    └── config/                # Bootstrap config for PostgreSQL, RustFS, Authelia
+    ├── docker-compose.yml     # Full dev/non-prod ecosystem (owned by feature 000)
+    └── config/                # Bootstrap config for PostgreSQL, RustFS, Authelia (owned by feature 000)
 ```
 
-**Structure Decision**: The Go backend follows a `cmd/` + `internal/` layout with domain-separated packages. The web UI handlers and templates live under `web/` to keep UI concerns separate from core business logic. SQL migrations are co-located under `migrations/`. The `deploy/compose/` directory contains the docker-compose stack and bootstrap configuration required to stand up PostgreSQL, RustFS, and Authelia with zero manual wiring on first start.
+**Structure Decision**: The Go backend follows a `cmd/` + `internal/` layout with domain-separated packages. The web UI handlers and templates live under `web/` to keep UI concerns separate from core business logic. SQL migrations are co-located under `migrations/`. Feature `001` consumes the `deploy/compose/` environment baseline produced by feature `000` and does not duplicate foundational environment setup scope.
 
 ## Complexity Tracking
 

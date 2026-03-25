@@ -2,6 +2,7 @@
 
 **Input**: Design documents from `/specs/001-multi-tenant-file-storage/`
 **Prerequisites**: `plan.md`, `spec.md`, `research.md`, `data-model.md`, `contracts/http-api.md`
+**External Dependency**: Feature `000-foundation-dev-environment` completed (environment bootstrap, startup diagnostics, and onboarding baseline)
 
 **Tests**: Unit test tasks are REQUIRED for business logic and are prioritized first in each story. Integration and end-to-end tests are explicitly included for each story.
 
@@ -20,42 +21,6 @@
 - Web UI (Go templates + HTMX): `web/templates/`, `web/static/`
 - Migrations/config: `migrations/`, `configs/`, `deploy/compose/`
 - Tests: `tests/unit/`, `tests/integration/`, `tests/e2e/`
-
----
-
-## Phase 1: Setup (Shared Infrastructure)
-
-**Purpose**: Initialize repository structure, quality gates, and dependency guardrails.
-
-- [ ] T001 Create base directories in `backend/`, `web/`, `tests/`, `migrations/`, `configs/`, `deploy/compose/`
-- [ ] T002 Initialize Go modules and service entrypoint in `backend/go.mod` and `backend/cmd/api/main.go`
-- [ ] T003 [P] Configure lint/format/test commands in `Makefile`
-- [ ] T004 [P] Add baseline config templates in `configs/app.example.env` and `configs/platform.seed.yaml`
-- [ ] T005 [P] Add dependency policy and approval checklist in `docs/dependency-policy.md`
-- [ ] T006 Define branch/commit/PR workflow in `docs/delivery-workflow.md`
-
----
-
-## Phase 2: Foundational (Blocking Prerequisites)
-
-**Purpose**: Build common foundations required by all user stories.
-
-**⚠️ CRITICAL**: No user story work begins until this phase is complete.
-
-- [ ] T007 Create initial schema migrations for core entities in `migrations/0001_initial.sql`
-- [ ] T008 [P] Add migration runner and startup checks in `backend/internal/platform/migrate.go`
-- [ ] T009 [P] Implement DB access interfaces and repositories in `backend/internal/platform/repository/`
-- [ ] T010 [P] Implement shared auth middleware skeleton in `backend/internal/auth/middleware.go`
-- [ ] T011 Implement tenant context extraction/propagation in `backend/internal/tenant/context.go`
-- [ ] T012 [P] Implement centralized error model and safe user responses in `backend/internal/platform/errors.go`
-- [ ] T013 [P] Implement structured logging interfaces and adapters in `backend/internal/platform/logging.go`
-- [ ] T014 Implement configuration layering loader (env -> db -> seed) in `backend/internal/platform/config_loader.go`
-- [ ] T015 [P] Wire HTTP router and route groups in `backend/internal/platform/http/router.go`
-- [ ] T016 [P] Foundational integration test (startup + DB + config seed) in `tests/integration/foundation_startup_test.go`
-
-**Checkpoint**: Foundation complete; user stories can proceed.
-
----
 
 ## Phase 3: User Story 1 - Tenant Created on First Login (Priority: P1) 🎯 MVP
 
@@ -271,12 +236,6 @@
 - [ ] T104 [P] [US21] E2E test for operator config UI in `tests/e2e/operator_config.spec.ts`
 - [ ] T105 [US21] Implement operator config service/handlers in `backend/internal/operator/service_config.go` and `backend/internal/operator/handler_config.go`
 
-## Phase 24: User Story 22 - Docker-Compose Ecosystem Startup (Priority: P2)
-
-- [ ] T106 [P] [US22] Integration smoke test for compose startup health in `tests/integration/compose_startup_health_test.go`
-- [ ] T107 [P] [US22] E2E environment test for basic upload/share workflow on compose stack in `tests/e2e/compose_bootstrap_flow.spec.ts`
-- [ ] T108 [US22] Implement compose topology and health checks in `deploy/compose/docker-compose.yml` and `deploy/compose/healthcheck.sh`
-
 ## Phase 25: User Story 23 - Android Client Access (Priority: P3)
 
 - [ ] T109 [P] [US23] Define mobile-facing API contract refinement in `specs/001-multi-tenant-file-storage/contracts/http-api.md`
@@ -320,14 +279,12 @@
 ## Dependencies & Execution Order
 
 ### Phase dependencies
-- Setup (Phase 1): start immediately
-- Foundational (Phase 2): depends on setup; blocks all stories
-- User stories (Phases 3-28): all depend on Phase 2
+- User stories (Phases 3-28): depend on completion of feature `000-foundation-dev-environment`
 - Polish: depends on completion of targeted stories
 
 ### Priority dependencies
 - MVP target: US1-US10 (P1)
-- Extended web platform: US11-US22, US24-US26 (P2)
+- Extended web platform: US11-US21, US24-US26 (P2)
 - Future scope: US23 (P3)
 
 ### Within each user story
@@ -340,13 +297,13 @@
 ## Parallel opportunities
 
 - Tasks marked [P] are parallelizable across different files.
-- After Phase 2, separate story phases can run in parallel by different contributors.
+- Separate story phases can run in parallel by different contributors once feature `000-foundation-dev-environment` is complete.
 - Tests in a story can run in parallel once fixtures are in place.
 
 ## Implementation strategy
 
 ### MVP first
-1. Complete Phase 1 + Phase 2
+1. Confirm feature `000-foundation-dev-environment` completion
 2. Complete US1-US10
 3. Validate MVP independently and demo
 
