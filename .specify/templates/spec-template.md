@@ -1,6 +1,7 @@
 # Feature Specification: [FEATURE NAME]
 
-**Feature Branch**: `[###-feature-name]`  
+**Feature Slug**: `[###-feature-name]`  
+**Task Branch Strategy**: One branch per task using `[task-id]-[short-description]`  
 **Created**: [DATE]  
 **Status**: Draft  
 **Input**: User description: "$ARGUMENTS"
